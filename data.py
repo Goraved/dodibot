@@ -9,9 +9,10 @@ def get_rehearsals_list() -> list:
 
 def get_rehearsals():
     rehearsals = get_rehearsals_list()
-    next_pay = f"*{rehearsals[0]['member']}* - at {rehearsals[0]['date'].replace(' 00:00:00 GMT', '')}"
-    rehearsals_list = '\n'.join([f'*{_["member"]}* at {_["date"].replace(" 00:00:00 GMT", "")}' for _ in rehearsals])
-    return next_pay, rehearsals_list, rehearsals[0]['member']
+    next_pay = f"*{rehearsals[0]['member_name']}* - at {rehearsals[0]['rehearsal_date'].replace(' 00:00:00 GMT', '')}"
+    rehearsals_list = '\n'.join(
+        [f'*{_["member_name"]}* at {_["rehearsal_date"].replace(" 00:00:00 GMT", "")}' for _ in rehearsals])
+    return next_pay, rehearsals_list, rehearsals[0]['member_name']
 
 
 stickers = {
@@ -26,6 +27,6 @@ stickers = {
 
 def cancel_rehearsal():
     rehearsals = get_rehearsals_list()
-    requests.get(f'http://dodiki.herokuapp.com/cancel/{rehearsals[0]["id"]}',
+    requests.get(f'http://dodiki.herokuapp.com/cancel/{rehearsals[0]["rehearsal_id"]}',
                  auth=(os.environ['USER'], os.environ['PASSWORD']))
     return get_rehearsals()
