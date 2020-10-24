@@ -54,7 +54,6 @@ def send_text(message):
 # bot.remove_webhook()
 # bot.polling(none_stop=True)
 
-
 # Heroku
 @server.route('/' + TOKEN, methods=['POST'])
 def getMessage():
@@ -62,7 +61,7 @@ def getMessage():
     return '!', 200
 
 
-# Comment to user local
+# Comment to use local
 @server.route("/")
 def webhook():
     bot.remove_webhook()
