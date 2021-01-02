@@ -7,7 +7,7 @@ def get_rehearsals_list() -> list:
     return requests.get('http://dodiki.herokuapp.com/get_rehearsals').json()['rehearsals']
 
 
-def get_rehearsals():
+def get_rehearsals() -> tuple:
     rehearsals = get_rehearsals_list()
     next_pay = f"*{rehearsals[0]['member_name']}* - at {rehearsals[0]['rehearsal_date'].replace(' 00:00:00 GMT', '')}"
     rehearsals_list = '\n'.join(
@@ -25,8 +25,24 @@ stickers = {
 }
 
 
-def cancel_rehearsal():
+def cancel_rehearsal() -> tuple:
     rehearsals = get_rehearsals_list()
     requests.get(f'http://dodiki.herokuapp.com/cancel/{rehearsals[0]["rehearsal_id"]}',
                  auth=(os.environ['USER'], os.environ['PASSWORD']))
     return get_rehearsals()
+
+
+def survey_question() -> str:
+    rehearsal = get_rehearsals_list()[0]['rehearsal_date'].replace(' 00:00:00 GMT', '')
+    return f'Are you able to visit the next rehearsal? - {rehearsal}'
+
+
+def help_message() -> str:
+    return """
+    1 - type "Who pays next?" or "/next" to get the next rehearsal date and name of the guy who gonna pay;
+2 - type "Rehearsals list" or "/list" to get a list of future rehearsals;
+3 - type "Open site" or "/site" to get a link to the Dodik site;
+4 - type "Card number" or "/card" to get a card number where need to transfer money;
+5 - type "Cancel next rehearsal" or "/cancel" to cancel next rehearsal and shift all list forward;
+6 - type "Survey" or "/survey" to start a survey about availability to go to the next rehearsal;
+    """
