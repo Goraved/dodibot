@@ -102,9 +102,9 @@ def run_schedule():
 
 
 # Uncomment to use local
-BOT.remove_webhook()
-run_schedule()
-BOT.polling(none_stop=True)
+# BOT.remove_webhook()
+# run_schedule()
+# BOT.polling(none_stop=True)
 
 
 # Heroku
@@ -115,12 +115,12 @@ def getMessage():
 
 
 # Comment to use local
-# @SERVER.route("/")
-# def webhook():
-#     BOT.remove_webhook()
-#     run_schedule()
-#     BOT.set_webhook(url="https://dodibot.herokuapp.com/" + TOKEN)
-#     return "!", 200
+@SERVER.route("/")
+def webhook():
+    BOT.remove_webhook()
+    run_schedule()
+    BOT.set_webhook(url="https://dodibot.herokuapp.com/" + TOKEN)
+    return "!", 200
 
 
 if __name__ == '__main__':
