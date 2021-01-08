@@ -6,14 +6,14 @@ import schedule
 import telebot
 from flask import Flask, request
 
-from data import get_rehearsals, stickers, cancel_rehearsal, help_message, survey_question
+from data import get_rehearsals, stickers, cancel_rehearsal, help_message, survey_question, is_next_rehearsal_near
 
 OPTIONS = {'Next': 'Who pays next?', 'Rehearsals': 'Rehearsals list', 'URL': 'Open site', 'Card': 'Card number',
            'Cancel': 'Cancel next rehearsal', 'Survey': 'Survey', 'Help': 'Help'}
 TOKEN = os.getenv('TOKEN')
 BOT = telebot.TeleBot(TOKEN)
 SERVER = Flask(__name__)
-TOTAL_ANSWERS = 0
+TOTAL_ANSWERS = []
 
 KEYBOARD1 = telebot.types.ReplyKeyboardMarkup()
 KEYBOARD1.row(OPTIONS['Next'], OPTIONS['Rehearsals'], OPTIONS['URL'], OPTIONS['Card'], OPTIONS['Cancel'])
@@ -27,6 +27,11 @@ def start_message(message):
 
 @BOT.message_handler(content_types=['sticker'])
 def get_sticker_id(sticker):
+    BOT.send_message(sticker.chat.id, f'Sticker Id - {sticker.sticker.file_id}')
+
+
+@BOT.message_handler(content_types=['answer'])
+def get_answer(sticker):
     BOT.send_message(sticker.chat.id, f'Sticker Id - {sticker.sticker.file_id}')
 
 
@@ -59,19 +64,25 @@ def send_text(message):
 
 
 def run_survey(chat_id: int = None):
-    global TOTAL_ANSWERS
+    cron = False
     if not chat_id:
         chat_id = int(os.getenv('CHAT_ID'))
+        cron = True
+
+    rehearsal_near = is_next_rehearsal_near()
+    if not rehearsal_near and not cron:
+        BOT.send_message(chat_id, 'There are no upcoming rehearsals for the next 3 days', parse_mode="Markdown")
+
     admins = BOT.get_chat_administrators(chat_id)
     users = ' '.join([f'[{admin.user.first_name}](tg://user?id={admin.user.id})' for admin in admins])
     question = survey_question()
 
-    if not TOTAL_ANSWERS:
+    if question in TOTAL_ANSWERS:
+        BOT.send_message(chat_id, 'Survey for the next rehearsal has been already created', parse_mode="Markdown")
+    elif question not in TOTAL_ANSWERS and rehearsal_near:
         BOT.send_message(chat_id, users, parse_mode="Markdown")
         BOT.send_poll(chat_id, question, ('Yes', 'No'), is_anonymous=False)
-        TOTAL_ANSWERS += 1
-    elif TOTAL_ANSWERS == 4:
-        BOT.stop_poll(chat_id, question)
+        TOTAL_ANSWERS.append(question)
 
 
 def schedule_checker():
@@ -91,9 +102,9 @@ def run_schedule():
 
 
 # Uncomment to use local
-# bot.remove_webhook()
+# BOT.remove_webhook()
 # run_schedule()
-# bot.polling(none_stop=True)
+# BOT.polling(none_stop=True)
 
 
 # Heroku

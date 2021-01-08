@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import requests
 
@@ -46,3 +47,11 @@ def help_message() -> str:
 5 - type "Cancel next rehearsal" or "/cancel" to cancel next rehearsal and shift all list forward;
 6 - type "Survey" or "/survey" to start a survey about availability to go to the next rehearsal;
     """
+
+
+def is_next_rehearsal_near() -> bool:
+    rehearsal = get_rehearsals_list()[0]['rehearsal_date'].replace(' 00:00:00 GMT', '')
+    next_date = datetime.strptime(rehearsal, '%a, %d %b %Y')
+    delta_days = (next_date.date() - datetime.now().date()).days
+    # Do not create a survey if next rehearsal is not upcoming
+    return delta_days <= 3
