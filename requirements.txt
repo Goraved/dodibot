@@ -1,6 +1,5 @@
 flask
-telebot
-pytelegrambotapi
+PyTelegramBotAPI
 gunicorn
 pylint-fail-under
 schedule
