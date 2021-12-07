@@ -1,5 +1,5 @@
 flask
 PyTelegramBotAPI
 gunicorn
-pylint-fail-under
+pylint
 schedule
