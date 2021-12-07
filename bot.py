@@ -93,7 +93,7 @@ def schedule_checker():
 
 def run_schedule():
     trigger_time = os.getenv('TRIGGER_TIME')
-    schedule.every().tuesday.at(trigger_time).do(run_survey)
+    # schedule.every().tuesday.at(trigger_time).do(run_survey)
     schedule.every().friday.at(trigger_time).do(run_survey)
     # Spin up a thread to run the schedule check so it doesn't block your bot.
     # This will take the function schedule_checker which will check every second
