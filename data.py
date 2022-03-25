@@ -34,13 +34,16 @@ def cancel_rehearsal() -> tuple:
 
 
 def survey_question() -> str:
+    msg = ''
     if os.getenv('WAR'):
-        return '🇺🇦 А ти задонатив на ЗСУ цього тижня? 🇺🇦'
+        msg = '🇺🇦 А ти задонатив на ЗСУ цього тижня? 🇺🇦'
     else:
         rehearsals = get_rehearsals_list()
         rehearsal_date = rehearsals[0]['rehearsal_date'].replace(' 00:00:00 GMT', '')
         rehearsal_date += ' at 10 AM' if 'Sun' in rehearsal_date else ' at 8 PM'
-        return f'Are you able to visit the next rehearsal? - {rehearsal_date} ({rehearsals[0]["member_name"]} gonna pay)'
+        msg = f'Are you able to visit the next rehearsal? - ' \
+              f'{rehearsal_date} ({rehearsals[0]["member_name"]} gonna pay)'
+    return msg
 
 
 def help_message() -> str:
