@@ -83,7 +83,7 @@ def run_survey(chat_id: int = None):
         BOT.send_message(chat_id, users, parse_mode="Markdown")
         if os.getenv('WAR'):
             BOT.send_poll(chat_id, question, ('Звісно 🔥', 'Все, пезда, нема більше грошей 🐖'), is_anonymous=False)
-            BOT.send_sticker(chat_id, 'CAACAgIAAxkBAAIEbmI4gPtbzQTqWwSavgABNqKomI6f4wACdwADFd4WHZnWNrMHaL0bIwQ')
+            BOT.send_sticker(chat_id, stickers['sbt'])
         else:
             BOT.send_poll(chat_id, question, ('Yes', 'No'), is_anonymous=False)
         TOTAL_ANSWERS.append(question)
