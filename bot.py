@@ -6,7 +6,8 @@ import schedule
 import telebot
 from flask import Flask, request
 
-from data import get_rehearsals, stickers, cancel_rehearsal, help_message, survey_question, is_next_rehearsal_near
+from data import get_rehearsals, STICKERS, cancel_rehearsal, help_message, survey_question, is_next_rehearsal_near, \
+    DEFAULT_STICKER
 
 OPTIONS = {'Next': 'Who pays next?', 'Rehearsals': 'Rehearsals list', 'URL': 'Open site', 'Card': 'Card number',
            'Cancel': 'Cancel next rehearsal', 'Survey': 'Survey', 'Help': 'Help'}
@@ -21,7 +22,7 @@ KEYBOARD1.row(OPTIONS['Next'], OPTIONS['Rehearsals'], OPTIONS['URL'], OPTIONS['C
 
 @BOT.message_handler(commands=['start'])
 def start_message(message):
-    BOT.send_sticker(message.chat.id, stickers['sbt'])
+    BOT.send_sticker(message.chat.id, STICKERS['sbt'])
     BOT.send_message(message.chat.id, 'Please choose an option', reply_markup=KEYBOARD1)
 
 
@@ -40,10 +41,10 @@ def send_text(message):
     if message.text.lower() == OPTIONS['Next'].lower() or '/next' in message.text.lower():
         rehearsals = get_rehearsals()
         BOT.send_message(message.chat.id, rehearsals[0], parse_mode="Markdown")
-        BOT.send_sticker(message.chat.id, stickers[rehearsals[2]])
+        BOT.send_sticker(message.chat.id, STICKERS.get(rehearsals[2], DEFAULT_STICKER))
     elif message.text.lower() == OPTIONS['Rehearsals'].lower() or '/list' in message.text.lower():
         BOT.send_message(message.chat.id, get_rehearsals()[1], parse_mode="Markdown")
-        BOT.send_sticker(message.chat.id, stickers['list'])
+        BOT.send_sticker(message.chat.id, STICKERS['list'])
     elif message.text.lower() == OPTIONS['URL'].lower() or '/site' in message.text.lower():
         BOT.send_message(message.chat.id, 'Site URL - https://dodiki.herokuapp.com')
     elif message.text.lower() == OPTIONS['Card'].lower() or '/card' in message.text.lower():
@@ -53,7 +54,7 @@ def send_text(message):
         rehearsals = cancel_rehearsal()
         BOT.send_message(message.chat.id, 'Done! Next rehearsal:')
         BOT.send_message(message.chat.id, rehearsals[0], parse_mode="Markdown")
-        BOT.send_sticker(message.chat.id, stickers[rehearsals[2]])
+        BOT.send_sticker(message.chat.id, STICKERS[rehearsals[2]])
     elif message.text.lower() == OPTIONS['Help'].lower() or '/help' in message.text.lower():
         BOT.send_message(message.chat.id, help_message())
     elif message.text.lower() == OPTIONS['Survey'].lower() or '/survey' in message.text.lower():
@@ -83,7 +84,7 @@ def run_survey(chat_id: int = None):
         BOT.send_message(chat_id, users, parse_mode="Markdown")
         if os.getenv('WAR'):
             BOT.send_poll(chat_id, question, ('Звісно 🔥', 'Все, пезда, нема більше грошей 🐖'), is_anonymous=False)
-            BOT.send_sticker(chat_id, stickers['sbt'])
+            BOT.send_sticker(chat_id, STICKERS['sbt'])
         else:
             BOT.send_poll(chat_id, question, ('Yes', 'No'), is_anonymous=False)
         TOTAL_ANSWERS.append(question)
