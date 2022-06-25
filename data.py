@@ -30,17 +30,17 @@ DEFAULT_STICKER = 'CAACAgIAAxkBAAIE1mKva8QHgK8vTDmyZ2FJ3e7BwoVRAAIOGwACnCK4SRpJx
 def cancel_rehearsal() -> tuple:
     rehearsals = get_rehearsals_list()
     requests.get(f'http://dodiki.herokuapp.com/cancel/{rehearsals[0]["rehearsal_id"]}',
-                 auth=(os.environ['user'], os.environ['password']))
+                 auth=(os.environ['USER'], os.environ['PASSWORD']))
     return get_rehearsals()
 
 
 def survey_question() -> str:
-    if os.getenv('war'):
+    if os.getenv('WAR'):
         msg = '🇺🇦 а ти задонатив на зсу цього тижня? 🇺🇦'
     else:
         rehearsals = get_rehearsals_list()
-        rehearsal_date = rehearsals[0]['rehearsal_date'].replace(' 00:00:00 gmt', '')
-        rehearsal_date += ' at 10 am' if 'sun' in rehearsal_date else ' at 8 pm'
+        rehearsal_date = rehearsals[0]['rehearsal_date'].replace(' 00:00:00 GMT', '')
+        rehearsal_date += ' at 11 am' if 'Sun' in rehearsal_date else ' at 8 pm'
         msg = f'are you able to visit the next rehearsal? - ' \
               f'{rehearsal_date} ({rehearsals[0]["member_name"]} gonna pay)'
     return msg
@@ -58,8 +58,8 @@ def help_message() -> str:
 
 
 def is_next_rehearsal_near() -> bool:
-    rehearsal = get_rehearsals_list()[0]['rehearsal_date'].replace(' 00:00:00 gmt', '')
-    next_date = datetime.strptime(rehearsal, '%a, %d %b %y')
+    rehearsal = get_rehearsals_list()[0]['rehearsal_date'].replace(' 00:00:00 GMT', '')
+    next_date = datetime.strptime(rehearsal, '%a, %d %b %Y')
     delta_days = (next_date.date() - datetime.now().date()).days
     # do not create a survey if next rehearsal is not upcoming
     return delta_days <= 3
