@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from threading import Thread
 from time import sleep
 
@@ -48,7 +49,15 @@ def send_text(message):
     elif message.text.lower() == OPTIONS['URL'].lower() or '/site' in message.text.lower():
         BOT.send_message(message.chat.id, 'Site URL - https://dodiki.herokuapp.com')
     elif message.text.lower() == OPTIONS['Card'].lower() or '/card' in message.text.lower():
-        BOT.send_message(message.chat.id, 'Card number - 5375414106892499')
+        today = datetime.now().date()
+        BOT.send_message(message.chat.id, '*IBAN:*\n'
+                                          '`UA023220010000026005320037612`\n\n'
+                                          '*ЄДРПОУ:*\n'
+                                          '`3224421492`\n\n'
+                                          '*Отримувач:*\n'
+                                          '`Рябчук Юрій Миколайович`\n\n'
+                                          '*Призначення:*\n'
+                                          f'`за репетицію {today}`', parse_mode="Markdown")
     elif message.text.lower() == OPTIONS['Cancel'].lower() or '/cancel' in message.text.lower():
         BOT.send_message(message.chat.id, 'Canceling next rehearsal')
         rehearsals = cancel_rehearsal()
