@@ -14,7 +14,7 @@ OPTIONS = {'Next': 'Who pays next?', 'Rehearsals': 'Rehearsals list', 'URL': 'Op
            'Cancel': 'Cancel next rehearsal', 'Survey': 'Survey', 'Help': 'Help'}
 TOKEN = os.getenv('TOKEN')
 BOT = telebot.TeleBot(TOKEN)
-SERVER = Flask(__name__)
+app = Flask(__name__)
 TOTAL_ANSWERS = []
 
 KEYBOARD1 = telebot.types.ReplyKeyboardMarkup()
@@ -122,14 +122,14 @@ def run_schedule():
 
 
 # Heroku
-@SERVER.route('/' + TOKEN, methods=['POST'])
+@app.route('/' + TOKEN, methods=['POST'])
 def getMessage():
     BOT.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return '!', 200
 
 
 # Comment to use local
-@SERVER.route("/")
+@app.route("/")
 def webhook():
     BOT.remove_webhook()
     run_schedule()
@@ -138,4 +138,4 @@ def webhook():
 
 
 if __name__ == '__main__':
-    SERVER.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
