@@ -121,13 +121,6 @@ def run_schedule():
 # BOT.polling(none_stop=True)
 
 
-# Heroku
-@app.route('/' + TOKEN, methods=['POST'])
-def getMessage():
-    BOT.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return '!', 200
-
-
 # Comment to use local
 @app.route("/")
 def webhook():
@@ -136,6 +129,15 @@ def webhook():
     run_schedule()
     BOT.set_webhook(url=f"{os.getenv('SERVER')}/{TOKEN}")
     return "!", 200
+
+# Heroku
+@app.route('/' + TOKEN, methods=['POST'])
+def getMessage():
+    BOT.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    return '!', 200
+
+
+
 
 
 if __name__ == '__main__':
