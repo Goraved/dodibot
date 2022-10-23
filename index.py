@@ -118,7 +118,8 @@ def run_schedule():
 # Uncomment to use local
 run_schedule()
 BOT.polling(none_stop=True)
-app.run()
+if __name__ == '__main__':
+    app.run()
 
 # # Comment to use local
 # @app.route("/")
