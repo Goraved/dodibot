@@ -133,7 +133,7 @@ def getMessage():
 def webhook():
     BOT.remove_webhook()
     run_schedule()
-    BOT.set_webhook(url=f"{os.getenv('server')}/{TOKEN}")
+    BOT.set_webhook(url=f"{os.getenv('SERVER')}/{TOKEN}")
     return "!", 200
 
 
