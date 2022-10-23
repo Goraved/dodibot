@@ -131,7 +131,7 @@ def getMessage():
 # Comment to use local
 @app.route("/")
 def webhook():
-    BOT.remove_webhook()
+    sleep(1)
     run_schedule()
     BOT.set_webhook(url=f"{os.getenv('SERVER')}/{TOKEN}")
     return "!", 200
