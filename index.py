@@ -116,29 +116,29 @@ def run_schedule():
 
 
 # Uncomment to use local
-# BOT.remove_webhook()
-# run_schedule()
-# BOT.polling(none_stop=True)
+BOT.remove_webhook()
+run_schedule()
+BOT.polling(none_stop=True)
+app.run()
 
-
-# Comment to use local
-@app.route("/")
-def webhook():
-    BOT.remove_webhook()
-    sleep(1)
-    run_schedule()
-    BOT.set_webhook(url=f"{os.getenv('SERVER')}/{TOKEN}")
-    return "!", 200
-
-# Heroku
-@app.route('/' + TOKEN, methods=['POST'])
-def getMessage():
-    BOT.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return '!', 200
-
-
+# # Comment to use local
+# @app.route("/")
+# def webhook():
+#     BOT.remove_webhook()
+#     sleep(1)
+#     run_schedule()
+#     BOT.set_webhook(url=f"{os.getenv('SERVER')}/{TOKEN}")
+#     return "!", 200
+#
+# # Heroku
+# @app.route('/' + TOKEN, methods=['POST'])
+# def getMessage():
+#     BOT.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+#     return '!', 200
 
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+#
+#
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
