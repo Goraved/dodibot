@@ -116,7 +116,6 @@ def run_schedule():
 
 
 # Uncomment to use local
-BOT.remove_webhook()
 run_schedule()
 BOT.polling(none_stop=True)
 app.run()
