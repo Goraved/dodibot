@@ -1,15 +1,8 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "./index.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
+  "builds": [{ "src": "index.py", "use": "@vercel/python", "config": { "maxDuration": 30 } }],
+  "routes": [{ "src": "/(.*)", "dest": "index.py" }],
+  "crons": [
+    { "path": "/cron/reminder", "schedule": "0 7 * * 0" }
   ]
 }

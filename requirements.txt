@@ -1,5 +1,4 @@
-flask
-PyTelegramBotAPI
-gunicorn
-pylint
-schedule
+flask>=3.0,<4
+PyTelegramBotAPI>=4.20,<5
+requests>=2.31,<3
+tzdata

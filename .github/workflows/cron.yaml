@@ -1,0 +1,32 @@
+# Friday survey + Sunday warm-up. Vercel Hobby crons have no retries/alerts, so the critical ones live here.
+# Times are UTC; Kyiv is UTC+2 (winter) / UTC+3 (summer). Needs repo secrets SERVER and CRON_SECRET.
+name: Bot cron
+
+on:
+  schedule:
+    - cron: '5 5 * * 5'       # Friday survey: 07:05 Kyiv (winter) / 08:05 (summer)
+    - cron: '*/15 8-11 * * 0' # Sunday 11:00-14:00 Kyiv: keep dodiki + bot warm
+  workflow_dispatch:
+    inputs:
+      path:
+        description: 'Endpoint to call'
+        default: '/cron/wake'
+
+jobs:
+  call:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call bot
+        env:
+          SERVER: ${{ secrets.SERVER }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SCHEDULE: ${{ github.event.schedule }}
+          INPUT_PATH: ${{ github.event.inputs.path }}
+        run: |
+          case "$SCHEDULE" in
+            '5 5 * * 5') URL="$SERVER/cron/survey" ;;
+            *) URL="$SERVER${INPUT_PATH:-/cron/wake}" ;;
+          esac
+          # fail the run (=> GitHub emails the owner) if the bot still errors after retries
+          curl --fail --silent --show-error --max-time 60 --retry 4 --retry-delay 20 --retry-all-errors \
+            -H "Authorization: Bearer $CRON_SECRET" "$URL"
