@@ -201,7 +201,9 @@ def webhook():
 def set_webhook():
     """One-off: register the webhook. Call with `Authorization: Bearer $CRON_SECRET`."""
     require_secret('Authorization', os.getenv('CRON_SECRET'), 'Bearer ')
-    url = f"{os.environ['SERVER'].rstrip('/')}/webhook"
+    # SERVER overrides; otherwise use the production domain Vercel exposes to every deployment
+    server = os.getenv('SERVER') or f"https://{os.environ['VERCEL_PROJECT_PRODUCTION_URL']}"
+    url = f"{server.rstrip('/')}/webhook"
     BOT.set_webhook(url=url, secret_token=os.environ['WEBHOOK_SECRET'], drop_pending_updates=True)
     return f'webhook set to {url}', 200
 
